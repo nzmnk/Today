@@ -27,7 +27,7 @@ class ReminderDetailViewController: UITableViewController {
             }
         }
         
-        var cellImage: UIImage? { // Return an image for the row.
+        var cellImage: UIImage? { // Return an image for the row based on the current enumeration case.
             switch self {
             case .title:
                 return nil
@@ -52,5 +52,18 @@ class ReminderDetailViewController: UITableViewController {
 
 
 extension ReminderDetailViewController {
-    static let reminderDetailCellIdentifier = "ReminderDetailCell"
+    static let reminderDetailCellIdentifier = "ReminderDetailCell" // Constant for the cell identifier.
+    
+    //A table view asks its data source for the number of rows in a section when determining how many cells can be displayed on screen.
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return ReminderRow.allCases.count //The number of rows in the table view equals the number of cases in the enumeration.
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+           let cell = tableView.dequeueReusableCell(withIdentifier: Self.reminderDetailCellIdentifier, for: indexPath)
+           let row = ReminderRow(rawValue: indexPath.row)
+           cell.textLabel?.text = row?.displayText(for: reminder) // Updating cell text
+           cell.imageView?.image = row?.cellImage // Updating cell image
+           return cell
+       }
 }
